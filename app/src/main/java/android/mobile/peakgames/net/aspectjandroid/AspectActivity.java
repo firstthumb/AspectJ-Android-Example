@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 public class AspectActivity extends Activity {
     private static final String TAG = AspectActivity.class.getName();
     private AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-    private HttpGet getRequest = new HttpGet("http://www.google.com");
+    private HttpGet getRequest = new HttpGet("http://www.peakgames.net/");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class AspectActivity extends Activity {
             exc.printStackTrace();
         }
 
-        return null;
+        return "";
     }
 
     @Override
