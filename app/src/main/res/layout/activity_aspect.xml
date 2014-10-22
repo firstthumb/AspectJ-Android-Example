@@ -19,7 +19,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button 2"
+        android:text="Do Async Call"
         android:id="@+id/clickButton2"
         android:layout_below="@+id/clickButton1"
         android:layout_centerHorizontal="true"
@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button 3"
+        android:text="Do Auth Async Call"
         android:id="@+id/clickButton3"
         android:layout_below="@+id/clickButton2"
         android:layout_centerHorizontal="true"
