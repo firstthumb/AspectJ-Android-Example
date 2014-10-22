@@ -11,10 +11,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button 1"
+        android:text="Load Image"
         android:id="@+id/clickButton1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp" />
+        android:layout_marginTop="10dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/clickButton2"
         android:layout_below="@+id/clickButton1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp" />
+        android:layout_marginTop="10dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -32,6 +32,13 @@
         android:id="@+id/clickButton3"
         android:layout_below="@+id/clickButton2"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="58dp" />
 
 </RelativeLayout>

@@ -1,8 +1,6 @@
 package android.mobile.peakgames.net.aspectjandroid.aspect;
 
-import android.nfc.Tag;
 import android.util.Log;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +15,11 @@ public class ProfilingAspect {
     public void doHttpCallEntryPoint() {
     }
 
-    @Around("doHttpCallEntryPoint()")
+    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
+    public void loadImageEntryPoint() {
+    }
+
+    @Around("doHttpCallEntryPoint() || loadImageEntryPoint()")
     public Object doHttpCallMethod(ProceedingJoinPoint joinPoint) {
         Object returnValue = null;
 
@@ -30,9 +32,9 @@ public class ProfilingAspect {
         long endTime = System.currentTimeMillis();
         long elapsedTime = (endTime - beginTime);
 
-        Log.d(TAG, "doHttpCallMethod elapsed " + elapsedTime + " ms");
+        Log.d(TAG, joinPoint.getSignature().getName() + " elapsed " + elapsedTime + " ms");
         if (MAX_ELAPSED_TIME < elapsedTime) {
-            Log.e(TAG, "doHttpCallMethod exceeded MAX_ELAPSED_TIME, the process is taking too much time");
+            Log.e(TAG, joinPoint.getSignature() + " exceeded MAX_ELAPSED_TIME, the process is taking too much time");
         }
 
         return returnValue;

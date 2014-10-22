@@ -1,6 +1,7 @@
 package android.mobile.peakgames.net.aspectjandroid;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -17,6 +27,7 @@ import org.apache.http.client.methods.HttpGet;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 
 public class AspectActivity extends Activity {
@@ -24,18 +35,36 @@ public class AspectActivity extends Activity {
     private AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     private HttpGet getRequest = new HttpGet("http://www.peakgames.net/");
 
+    private static final String[] IMAGES = new String[21];
+    static {
+        for (int i = 0; i < 21; i++) {
+            IMAGES[i] = String.format("http://www.google.com.tr/intl/tr/logoyapsana/images/winners/30_%02d.gif", (i+1));
+        }
+    }
+
+    private ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+                .writeDebugLogs()
+                .build();
+
+        ImageLoader.getInstance().init(config);
+
         setContentView(R.layout.activity_aspect);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         {
             Button button = (Button) findViewById(R.id.clickButton1);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Button 1 clicked");
-                    doAsyncCall();
+                    makeAsyncCall();
                 }
             });
         }
@@ -45,7 +74,6 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Button 2 clicked");
                     doAsyncCall();
                 }
             });
@@ -56,11 +84,28 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Button 3 clicked");
                     doAsyncCall();
                 }
             });
         }
+    }
+
+    public void makeAsyncCall() {
+        new AsyncTask<String, Void, Bitmap>() {
+            @Override
+            protected Bitmap doInBackground(String... params) {
+                return fetchImage(params[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }.execute((IMAGES[new Random().nextInt(21)]));
+    }
+
+    public Bitmap fetchImage(String imageUri) {
+        return ImageLoader.getInstance().loadImageSync(imageUri);
     }
 
     public void doAsyncCall() {
