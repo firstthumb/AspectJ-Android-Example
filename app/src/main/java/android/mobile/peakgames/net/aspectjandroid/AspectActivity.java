@@ -1,24 +1,22 @@
 package android.mobile.peakgames.net.aspectjandroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -36,9 +34,10 @@ public class AspectActivity extends Activity {
     private HttpGet getRequest = new HttpGet("http://www.peakgames.net/");
 
     private static final String[] IMAGES = new String[21];
+
     static {
         for (int i = 0; i < 21; i++) {
-            IMAGES[i] = String.format("http://www.google.com.tr/intl/tr/logoyapsana/images/winners/30_%02d.gif", (i+1));
+            IMAGES[i] = String.format("http://www.google.com.tr/intl/tr/logoyapsana/images/winners/30_%02d.gif", (i + 1));
         }
     }
 
@@ -84,7 +83,27 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doAsyncCall();
+                    doAuthAsyncCall();
+                }
+            });
+        }
+
+        {
+            final EditText input = new EditText(this);
+            Button button = (Button) findViewById(R.id.clickButton4);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(AspectActivity.this)
+                            .setTitle("Login Name")
+                            .setMessage("Enter your login name")
+                            .setView(input)
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Session.getInstance().setName(input.getText().toString());
+                                }
+                            })
+                            .show();
                 }
             });
         }
@@ -109,6 +128,17 @@ public class AspectActivity extends Activity {
     }
 
     public void doAsyncCall() {
+        new AsyncTask<Void, Void, String>() {
+
+            @Override
+            protected String doInBackground(Void... params) {
+                return doHttpCall();
+            }
+        }.execute();
+    }
+
+    @SecureMethod
+    public void doAuthAsyncCall() {
         new AsyncTask<Void, Void, String>() {
 
             @Override
