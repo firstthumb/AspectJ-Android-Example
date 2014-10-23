@@ -47,7 +47,7 @@ public class AspectActivity extends Activity {
     private static final Set<String> AUTH_NAMES = new HashSet<String>();
 
     static {
-        AUTH_NAMES.add("erol");
+        AUTH_NAMES.add("peak");
     }
 
     private HashMap<String, Bitmap> cache = new HashMap<String, Bitmap>(21);
