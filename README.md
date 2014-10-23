@@ -26,3 +26,10 @@ Run with Gradle on commandline
  Logging all actions
 ###### ProfilingAspect
  Measure elapsed time for async call and fetching image
+
+#### Implementation without Aspect
+https://github.com/firstthumb/AspectJ-Android-Example/tree/without_aspect
+
+Compare with Aspect version
+
+https://github.com/firstthumb/AspectJ-Android-Example/compare/without_aspect
