@@ -30,30 +30,18 @@ import java.util.Random;
 
 public class AspectActivity extends Activity {
     private static final String TAG = AspectActivity.class.getName();
+
     private AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     private HttpGet getRequest = new HttpGet("http://www.peakgames.net/");
 
-    private static final String[] IMAGES = new String[21];
-
-    static {
-        for (int i = 0; i < 21; i++) {
-            IMAGES[i] = String.format("http://www.google.com.tr/intl/tr/logoyapsana/images/winners/30_%02d.gif", (i + 1));
-        }
-    }
+    private String[] images = new String[21];
 
     private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
-                .writeDebugLogs()
-                .build();
-
-        ImageLoader.getInstance().init(config);
+        initialize();
 
         setContentView(R.layout.activity_aspect);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -63,7 +51,7 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    makeAsyncCall();
+                    doAsyncFetchImage();
                 }
             });
         }
@@ -73,7 +61,7 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doAsyncCall();
+                    doAsyncHttpCall();
                 }
             });
         }
@@ -83,7 +71,7 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doAuthAsyncCall();
+                    doAuthAsyncHttpCall();
                 }
             });
         }
@@ -109,7 +97,7 @@ public class AspectActivity extends Activity {
         }
     }
 
-    public void makeAsyncCall() {
+    public void doAsyncFetchImage() {
         new AsyncTask<String, Void, Bitmap>() {
             @Override
             protected Bitmap doInBackground(String... params) {
@@ -120,14 +108,14 @@ public class AspectActivity extends Activity {
             protected void onPostExecute(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);
             }
-        }.execute((IMAGES[new Random().nextInt(21)]));
+        }.execute((images[new Random().nextInt(21)]));
     }
 
     public Bitmap fetchImage(String imageUri) {
         return ImageLoader.getInstance().loadImageSync(imageUri);
     }
 
-    public void doAsyncCall() {
+    public void doAsyncHttpCall() {
         new AsyncTask<Void, Void, String>() {
 
             @Override
@@ -138,14 +126,8 @@ public class AspectActivity extends Activity {
     }
 
     @SecureMethod
-    public void doAuthAsyncCall() {
-        new AsyncTask<Void, Void, String>() {
-
-            @Override
-            protected String doInBackground(Void... params) {
-                return doHttpCall();
-            }
-        }.execute();
+    public void doAuthAsyncHttpCall() {
+        doAsyncHttpCall();
     }
 
     public String doHttpCall() {
@@ -195,5 +177,19 @@ public class AspectActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initialize() {
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+                .writeDebugLogs()
+                .build();
+
+        ImageLoader.getInstance().init(config);
+
+        for (int i = 0; i < 21; i++) {
+            images[i] = String.format("http://www.google.com.tr/intl/tr/logoyapsana/images/winners/30_%02d.gif", (i + 1));
+        }
     }
 }
