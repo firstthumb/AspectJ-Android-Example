@@ -18,7 +18,7 @@ public class AuthenticationAspect {
     private static final Set<String> AUTH_NAMES = new HashSet<String>();
 
     static {
-        AUTH_NAMES.add("erol");
+        AUTH_NAMES.add("peak");
     }
 
     @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.*Auth*(..)) || execution(@android.mobile.peakgames.net.aspectjandroid.SecureMethod * *(..))")

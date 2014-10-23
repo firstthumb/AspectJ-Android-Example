@@ -1,6 +1,7 @@
 package android.mobile.peakgames.net.aspectjandroid.aspect;
 
 import android.util.Log;
+import android.widget.Button;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -15,12 +16,12 @@ public class LoggingAspect {
 
     @Before("onClickEntryPoint()")
     public void onClickBefore(JoinPoint joinPoint) {
-        Log.d(TAG, "Before Advice ==> Signature : " + joinPoint.getSignature());
+        Log.d(TAG, "Before Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
     }
 
     @Around("onClickEntryPoint()")
     public void onClickAround(ProceedingJoinPoint joinPoint) {
-        Log.d(TAG, "Around Advice ==> Signature : " + joinPoint.getSignature());
+        Log.d(TAG, "Around Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
 
         try {
             joinPoint.proceed();
@@ -31,7 +32,7 @@ public class LoggingAspect {
 
     @After("onClickEntryPoint()")
     public void onClickAfter(JoinPoint joinPoint) {
-        Log.d(TAG, "After Advice ==> Signature : " + joinPoint.getSignature());
+        Log.d(TAG, "After Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
     }
 
     @AfterReturning(pointcut = "onClickEntryPoint()")
