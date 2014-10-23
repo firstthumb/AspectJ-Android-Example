@@ -2,11 +2,14 @@ package android.mobile.peakgames.net.aspectjandroid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.mobile.peakgames.net.aspectjandroid.exception.AuthenticationException;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +28,10 @@ import org.apache.http.client.methods.HttpGet;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 
 public class AspectActivity extends Activity {
@@ -37,6 +43,15 @@ public class AspectActivity extends Activity {
     private String[] images = new String[21];
 
     private ImageView imageView;
+
+    private static final Set<String> AUTH_NAMES = new HashSet<String>();
+
+    static {
+        AUTH_NAMES.add("erol");
+    }
+
+    private HashMap<String, Bitmap> cache = new HashMap<String, Bitmap>(21);
+    private static final long MAX_ELAPSED_TIME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +66,9 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, "Before ID : " + ((Button)v).getText() + " clicked");
                     doAsyncFetchImage();
+                    Log.d(TAG, "After ID : " + ((Button)v).getText() + " clicked");
                 }
             });
         }
@@ -61,7 +78,9 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, "Before ID : " + ((Button)v).getText() + " clicked");
                     doAsyncHttpCall();
+                    Log.d(TAG, "After ID : " + ((Button)v).getText() + " clicked");
                 }
             });
         }
@@ -71,7 +90,21 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doAuthAsyncHttpCall();
+                    Log.d(TAG, "Before ID : " + ((Button)v).getText() + " clicked");
+                    try {
+                        doAuthAsyncHttpCall();
+                    } catch (AuthenticationException exc) {
+                        new AlertDialog.Builder(AspectActivity.this)
+                                .setTitle("Authentication Error")
+                                .setMessage("You are not authenticated")
+                                .show();
+                    } catch (Exception exc) {
+                        new AlertDialog.Builder(AspectActivity.this)
+                                .setTitle("Error")
+                                .setMessage("Error occurred Exception : " + exc)
+                                .show();
+                    }
+                    Log.d(TAG, "After ID : " + ((Button)v).getText() + " clicked");
                 }
             });
         }
@@ -82,6 +115,7 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, "Before ID : " + ((Button)v).getText() + " clicked");
                     new AlertDialog.Builder(AspectActivity.this)
                             .setTitle("Login Name")
                             .setMessage("Enter your login name")
@@ -92,6 +126,7 @@ public class AspectActivity extends Activity {
                                 }
                             })
                             .show();
+                    Log.d(TAG, "After ID : " + ((Button)v).getText() + " clicked");
                 }
             });
         }
@@ -112,7 +147,27 @@ public class AspectActivity extends Activity {
     }
 
     public Bitmap fetchImage(String imageUri) {
-        return ImageLoader.getInstance().loadImageSync(imageUri);
+        long beginTime = System.currentTimeMillis();
+        try {
+            if (cache.containsKey(imageUri)) {
+                Log.d(TAG, "Image " + imageUri + " found in cache");
+
+                Bitmap bitmap = cache.get(imageUri);
+                return bitmap;
+            } else {
+                Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUri);
+                cache.put(imageUri, bitmap);
+                Log.d(TAG, "Cached " + imageUri);
+                return bitmap;
+            }
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = (endTime - beginTime);
+            Log.d(TAG, "fetchImage elapsed " + elapsedTime + " ms");
+            if (MAX_ELAPSED_TIME < elapsedTime) {
+                Log.e(TAG, "fetchImage exceeded MAX_ELAPSED_TIME, the process is taking too much time");
+            }
+        }
     }
 
     public void doAsyncHttpCall() {
@@ -125,12 +180,19 @@ public class AspectActivity extends Activity {
         }.execute();
     }
 
-    @SecureMethod
     public void doAuthAsyncHttpCall() {
+        if (AUTH_NAMES.contains(Session.getInstance().getName())) {
+            Log.d(TAG, "Authenticate successfully");
+        } else {
+            Log.e(TAG, "User : " + Session.getInstance().getName() + " is not authenticated");
+            throw new AuthenticationException();
+        }
+
         doAsyncHttpCall();
     }
 
     public String doHttpCall() {
+        long beginTime = System.currentTimeMillis();
         try {
             HttpResponse response = client.execute(getRequest);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -157,6 +219,13 @@ public class AspectActivity extends Activity {
             }
         } catch (Exception exc) {
             exc.printStackTrace();
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = (endTime - beginTime);
+            Log.d(TAG, "doHttpCall elapsed " + elapsedTime + " ms");
+            if (MAX_ELAPSED_TIME < elapsedTime) {
+                Log.e(TAG, "doHttpCall exceeded MAX_ELAPSED_TIME, the process is taking too much time");
+            }
         }
 
         return "";
