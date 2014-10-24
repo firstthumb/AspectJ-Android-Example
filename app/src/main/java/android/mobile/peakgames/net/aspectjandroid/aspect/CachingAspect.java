@@ -9,17 +9,17 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import java.util.HashMap;
 
-@Aspect
+//@Aspect
 public class CachingAspect {
     private static final String TAG = CachingAspect.class.getName();
 
     private HashMap<String, Bitmap> cache = new HashMap<String, Bitmap>(21);
 
-    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
+//    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
     public void loadImageEntryPoint() {
     }
 
-    @Around("loadImageEntryPoint()")
+//    @Around("loadImageEntryPoint()")
     public Object loadImageMethod(ProceedingJoinPoint joinPoint) {
         String imageUri = (String) joinPoint.getArgs()[0];
 

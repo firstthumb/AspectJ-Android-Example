@@ -6,20 +6,20 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
-@Aspect
+//@Aspect
 public class ProfilingAspect {
     private static final String TAG = ProfilingAspect.class.getName();
     private static final long MAX_ELAPSED_TIME = 1000;
 
-    @Pointcut("execution(String android.mobile.peakgames.net.aspectjandroid.AspectActivity.doHttpCall(..))")
+//    @Pointcut("execution(String android.mobile.peakgames.net.aspectjandroid.AspectActivity.doHttpCall(..))")
     public void doHttpCallEntryPoint() {
     }
 
-    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
+//    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
     public void loadImageEntryPoint() {
     }
 
-    @Around("doHttpCallEntryPoint() || loadImageEntryPoint()")
+//    @Around("doHttpCallEntryPoint() || loadImageEntryPoint()")
     public Object doHttpCallMethod(ProceedingJoinPoint joinPoint) {
         Object returnValue = null;
 

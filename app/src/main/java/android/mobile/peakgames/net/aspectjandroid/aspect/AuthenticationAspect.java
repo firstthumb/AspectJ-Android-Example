@@ -11,7 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import java.util.HashSet;
 import java.util.Set;
 
-@Aspect
+//@Aspect
 public class AuthenticationAspect {
     private static final String TAG = AuthenticationAspect.class.getName();
 
@@ -21,11 +21,11 @@ public class AuthenticationAspect {
         AUTH_NAMES.add("peak");
     }
 
-    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.*Auth*(..)) || execution(@android.mobile.peakgames.net.aspectjandroid.SecureMethod * *(..))")
+//    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.*Auth*(..)) || execution(@android.mobile.peakgames.net.aspectjandroid.SecureMethod * *(..))")
     public void authenticateEntryPoint() {
     }
 
-    @Around("authenticateEntryPoint()")
+//    @Around("authenticateEntryPoint()")
     public void authenticateMethod(ProceedingJoinPoint joinPoint) {
         if (AUTH_NAMES.contains(Session.getInstance().getName())) {
             Log.d(TAG, "Authenticate successfully");

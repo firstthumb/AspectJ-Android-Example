@@ -6,20 +6,20 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 
-@Aspect
+//@Aspect
 public class LoggingAspect {
     private static final String TAG = LoggingAspect.class.getName();
 
-    @Pointcut("execution(* android.view.View.OnClickListener.onClick(..))")
+//    @Pointcut("execution(* android.view.View.OnClickListener.onClick(..))")
     public void onClickEntryPoint() {
     }
 
-    @Before("onClickEntryPoint()")
+//    @Before("onClickEntryPoint()")
     public void onClickBefore(JoinPoint joinPoint) {
         Log.d(TAG, "Before Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
     }
 
-    @Around("onClickEntryPoint()")
+//    @Around("onClickEntryPoint()")
     public void onClickAround(ProceedingJoinPoint joinPoint) {
         Log.d(TAG, "Around Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
 
@@ -30,12 +30,12 @@ public class LoggingAspect {
         }
     }
 
-    @After("onClickEntryPoint()")
+//    @After("onClickEntryPoint()")
     public void onClickAfter(JoinPoint joinPoint) {
         Log.d(TAG, "After Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
     }
 
-    @AfterReturning(pointcut = "onClickEntryPoint()")
+//    @AfterReturning(pointcut = "onClickEntryPoint()")
     public void onClickAfterReturning() {
         Log.d(TAG, "AfterReturning Advice ==>");
     }
