@@ -37,6 +37,7 @@ public class AspectActivity extends Activity {
     private String[] images = new String[21];
 
     private ImageView imageView;
+    private AlertDialog loginAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +83,22 @@ public class AspectActivity extends Activity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(AspectActivity.this)
-                            .setTitle("Login Name")
-                            .setMessage("Enter your login name")
-                            .setView(input)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    Session.getInstance().setName(input.getText().toString());
-                                }
-                            })
-                            .show();
+                    if (loginAlert == null) {
+                        loginAlert = new AlertDialog.Builder(AspectActivity.this)
+                                .setTitle("Login Name")
+                                .setMessage("Enter your login name")
+                                .setView(input)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Session.getInstance().setName(input.getText().toString());
+                                        loginAlert.dismiss();
+                                    }
+                                })
+                                .show();
+                    }
+                    else {
+                        loginAlert.show();
+                    }
                 }
             });
         }
