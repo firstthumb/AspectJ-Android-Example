@@ -6,7 +6,9 @@ import android.content.Context;
 import android.mobile.peakgames.net.aspectjandroid.exception.AuthenticationException;
 import android.util.Log;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -35,5 +37,14 @@ public class ExceptionHandlingAspect {
                         .show();
             }
         }
+    }
+
+//    @Around(value = "exceptionEntryPoint()")
+    public Object exceptionAroundMethod(ProceedingJoinPoint joinPoint) {
+        try {
+            return joinPoint.proceed();
+        } catch (Throwable throwable) {}
+
+        return null;
     }
 }
