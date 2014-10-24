@@ -15,15 +15,13 @@ public class CachingAspect {
 
     private HashMap<String, Bitmap> cache = new HashMap<String, Bitmap>(21);
 
-//    @Pointcut("execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(..))")
-    public void loadImageEntryPoint() {
+//    @Pointcut(value = "execution(* android.mobile.peakgames.net.aspectjandroid.AspectActivity.fetchImage(String)) && args(imageUri)", argNames = "imageUri")
+    public void loadImageEntryPoint(String imageUri) {
     }
 
-//    @Around("loadImageEntryPoint()")
-    public Object loadImageMethod(ProceedingJoinPoint joinPoint) {
-        String imageUri = (String) joinPoint.getArgs()[0];
-
-        Object object = null;
+//    @Around(value = "loadImageEntryPoint(imageUri)")
+    public Object loadImageMethod(ProceedingJoinPoint joinPoint, String imageUri) throws Throwable {
+        Object object;
         if (cache.containsKey(imageUri)) {
             Log.d(TAG, "Image " + imageUri + " found in cache");
 
@@ -31,13 +29,9 @@ public class CachingAspect {
             return bitmap;
         }
         else {
-            try {
-                object = joinPoint.proceed();
-                cache.put(imageUri, (Bitmap)object);
-                Log.d(TAG, "Cached " + imageUri);
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
+            object = joinPoint.proceed();
+            cache.put(imageUri, (Bitmap)object);
+            Log.d(TAG, "Cached " + imageUri);
         }
 
         return object;

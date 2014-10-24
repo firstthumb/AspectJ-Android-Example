@@ -20,15 +20,13 @@ public class ProfilingAspect {
     }
 
 //    @Around("doHttpCallEntryPoint() || loadImageEntryPoint()")
-    public Object doHttpCallMethod(ProceedingJoinPoint joinPoint) {
+    public Object doHttpCallMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object returnValue = null;
 
         long beginTime = System.currentTimeMillis();
-        try {
-            returnValue = joinPoint.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+
+        returnValue = joinPoint.proceed();
+
         long endTime = System.currentTimeMillis();
         long elapsedTime = (endTime - beginTime);
 

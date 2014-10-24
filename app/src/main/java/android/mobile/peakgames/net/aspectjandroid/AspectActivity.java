@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -164,6 +165,13 @@ public class AspectActivity extends Activity {
             }
         } catch (Exception exc) {
             exc.printStackTrace();
+        } finally {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AspectActivity.this, "Http call completed", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         return "";

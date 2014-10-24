@@ -26,9 +26,11 @@ public class AuthenticationAspect {
     }
 
 //    @Around("authenticateEntryPoint()")
-    public void authenticateMethod(ProceedingJoinPoint joinPoint) {
+    public void authenticateMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         if (AUTH_NAMES.contains(Session.getInstance().getName())) {
             Log.d(TAG, "Authenticate successfully");
+
+            joinPoint.proceed();
         } else {
             Log.e(TAG, "User : " + Session.getInstance().getName() + " is not authenticated");
             throw new AuthenticationException();

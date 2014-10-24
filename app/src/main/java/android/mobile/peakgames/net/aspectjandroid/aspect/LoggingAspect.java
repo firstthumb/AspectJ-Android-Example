@@ -20,14 +20,10 @@ public class LoggingAspect {
     }
 
 //    @Around("onClickEntryPoint()")
-    public void onClickAround(ProceedingJoinPoint joinPoint) {
+    public void onClickAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Log.d(TAG, "Around Advice ==> Clicked on : " + ((Button)joinPoint.getArgs()[0]).getText());
 
-        try {
-            joinPoint.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        joinPoint.proceed();
     }
 
 //    @After("onClickEntryPoint()")
